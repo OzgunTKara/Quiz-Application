@@ -68,19 +68,22 @@ def cc (request):
     return render(request,'dersler/c++.html',context)
 # QUİZLER
 
-def profil (request):     
-   
-    context={}
-    user = User.objects.get(username = request.user)
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import UserInfo, UserInfoStatus
+
+@login_required
+def profil(request):
+    context = {}
+    user = request.user
     userinfo = UserInfo.objects.get(user=user)
     
-    if request.method=="POST": # methodun post olduğunu doğrula
-        # ___PROFİL___
-        if request.POST["formbutton"] == "profilChange":  # formdan gelen butonu kontrol et
+    if request.method == "POST":
+        if request.POST["formbutton"] == "profilChange":
             password = request.POST["password"]
-            if user.check_password(password):  # parolayı kontrol et
-                username = request.POST["username"]  # kullanıcı çek
-                job = request.POST["job"]  # iş çek
+            if user.check_password(password):
+                username = request.POST["username"]
+                job = request.POST["job"]
                 
                 image = request.FILES.get("image")
                 
@@ -89,70 +92,66 @@ def profil (request):
                 userinfo.job = job
                 userinfo.image = image
                 userinfo.save()
-            
-                # user.save()  # kullanıcıyı kaydet
-                # sayfayı resetle, aynı sayfayı tekrar yönlendir
-                return redirect('profil')
-            
-            
-            
-            
-           
-        
-        # ___NAME___
-        if request.POST["formbutton"] == "nameChange":  # formdan gelen butonu kontrol et
-            name = request.POST["name"]  # emaili çek
-            surname = request.POST["surname"]  # emaili çek
-            
-            user.first_name = name  # emaili değiştir
-            user.last_name = surname  # emaili değiştir
-            user.save()  # kullanıcıyı kaydet
-            # sayfayı resetle, aynı sayfayı tekrar yönlendir
-            return redirect('profil')
-            
-        # ___EMAİL___
-        if request.POST["formbutton"] == "emailChange": # formdan gelen butonu kontrol et
-            password = request.POST["password"] # parolayı değişkene çek
-            if user.check_password(password): # parolayı kontrol et
-                email = request.POST["email"] # emaili çek
-                user.email = email # emaili değiştir
-                user.save() # kullanıcıyı kaydet
-                return redirect('profil') # sayfayı resetle, aynı sayfayı tekrar yönlendir
-        # ___PHONE___
-        if request.POST["formbutton"] == "telChange":  # formdan gelen butonu kontrol et
-            password = request.POST["password"]  # parolayı değişkene çek
-            if user.check_password(password):  # parolayı kontrol et
-                tel = request.POST["tel"]  # tel çek
-                userinfo.phone = tel  # tel değiştir
-                userinfo.save()  # kullanıcıyı kaydet
-                # sayfayı resetle, aynı sayfayı tekrar yönlendir
-                return redirect('profil')
-        
-        # ___ADDRESS___
-        if request.POST["formbutton"] == "addressChange":  # formdan gelen butonu kontrol et
-            address = request.POST["address"]  # tel çek
-            userinfo.adress = address  # tel değiştir
-            userinfo.save()  # kullanıcıyı kaydet
-            # sayfayı resetle, aynı sayfayı tekrar yönlendir
-            return redirect('profil')
-            
                 
-        # ___STATU___
+                # Güncellenen avatarı kullanıcı nesnesine kaydet
+                request.user.profile_image = image
+                request.user.save()
+                
+                return redirect('profil')
+            
+        if request.POST["formbutton"] == "nameChange":
+            name = request.POST["name"]
+            surname = request.POST["surname"]
+            
+            user.first_name = name
+            user.last_name = surname
+            user.save()
+            
+            return redirect('profil')
+        
+        if request.POST["formbutton"] == "emailChange":
+            password = request.POST["password"]
+            if user.check_password(password):
+                email = request.POST["email"]
+                user.email = email
+                user.save()
+                
+                return redirect('profil')
+        
+        if request.POST["formbutton"] == "telChange":
+            password = request.POST["password"]
+            if user.check_password(password):
+                tel = request.POST["tel"]
+                userinfo.phone = tel
+                userinfo.save()
+                
+                return redirect('profil')
+        
+        if request.POST["formbutton"] == "addressChange":
+            address = request.POST["address"]
+            userinfo.adress = address
+            userinfo.save()
+            
+            return redirect('profil')
+        
         if request.POST["formbutton"] == "formStatu":
             title = request.POST["title"]
             statu = request.POST["statu"]
-            userstatu = UserInfoStatus(title=title,statu=statu,user=request.user)
+            userstatu = UserInfoStatus(title=title, statu=statu, user=request.user)
             userstatu.save()
             
             userinfo.status.add(userstatu)
             userinfo.save()
-            return redirect("profil")
             
-    context.update({
-        "user":user,
-        "userinfo":userinfo,
-    })
-    return render(request,'profile.html',context)
+            return redirect("profil")
+    
+    context = {
+        "user": user,
+        "userinfo": userinfo,
+        "updated_profile_image": userinfo.image.url if userinfo.image else None,
+    }
+    return render(request, 'profile.html', context)
+
 
 def deleteStatu(request,sid):
     statu = UserInfoStatus.objects.get(id=sid)
