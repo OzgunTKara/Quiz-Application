@@ -6,32 +6,31 @@
 {% include 'part/header.html' %}
 
 <section class="gradient-custom " style=" height: 100%; z-index: 999;">
-  <div class="container py-5">
+  <div class="container mt-5 py-5">
      
 
       <div class="row">
           <div class="col-lg-4">
               <div style="height: 500px;" class="card mb-4">
-                  <div class="card-body text-center">
-                      
-                      {% if userinfo.image %}
-                      <img style="text-align: center; " src="{{ userinfo.image.url }}"
-                          alt="avatar" class=" img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
-                          
-                      {% else %}
-                          
-                        
-                              alt="avatar" class="rounded-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
-                      {% endif %}
-                          
-                      <h5 class="my-3" style="color: black;">Kullanıcı Adı: {{ user.username }}</h5>
-                      <p class="text-muted mb-1"  style="color: black;">İş: {{ userinfo.job }}</p>
-                      <p class="text-muted mb-4"  style="color: black;">Adres: {{ userinfo.adress }}</p>
-                      <div class="d-flex justify-content-center mb-2">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        {% if userinfo.image %}
+                            <img src="{{ userinfo.image.url }}" alt="avatar" class="img-fluid rounded-circle"
+                                style="width: 250px; height: 250px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'img/default-avatar.jpg' %}" alt="default-avatar" class="img-fluid rounded-circle"
+                                style="width: 250px; height: 250px; object-fit: cover;">
+                        {% endif %}
+                    </div>
+                    <h5 class="my-3" style="color: black;">Kullanıcı Adı: {{ user.username }}</h5>
+                    <p class="text-muted mb-1" style="color: black;">İş: {{ userinfo.job }}</p>
+                    <p class="text-muted mb-4" style="color: black;">Adres: {{ userinfo.adress }}</p>
+                    <div class="d-flex justify-content-center mb-2">
                          
                         <button style="margin-right: -50px;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProfil">
                             Düzenle
                         </button>
+                        
                           <div class="col-sm-1 ps-5">
                               <!-- Button trigger modal -->
                           
@@ -91,7 +90,7 @@
           <div class="col-lg-8">
               <div class="card mb-4" style="height: 300px;">
                   <div style="margin-top: -30px; " class="card-body">
-                      <div class="row">
+                      <div class="row pt-4">
                           <div class="col-sm-3">
                               <p class="mb-0"  style="color: black;">İsim Soyisim</p>
                           </div>
@@ -287,8 +286,9 @@
                                   </div>
                               </div>
                               <div class="progress rounded mb-3" style="height: 10px;">
-                                  <div class="progress-bar" role="progressbar" style="width: {{ i.statu }}%;" aria-valuenow="{{ i.statu }}"
-                                      aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style="width:{{ i.statu }}%;" aria-valuenow="{{ i.statu }}"
+                                    aria-valuemin="0" aria-valuemax="100">
+                                </div>                           
                               </div>
                               {% endfor %}
                               
