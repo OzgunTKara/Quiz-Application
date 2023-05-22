@@ -32,41 +32,44 @@ rel="stylesheet"
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link text-dark main " href="{% url 'anasayfa' %}">Anasayfa</a>
+            <a class="nav-link text-white " href="{% url 'anasayfa' %}">Anasayfa</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark main " href="{% url 'ders' %}">Dersler</a>
+            <a class="nav-link text-white " href="{% url 'ders' %}">Dersler</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark main " href="{% url 'main' %}">Quziler</a>
+            <a class="nav-link text-white " href="{% url 'main' %}">Quziler</a>
           </li>                      
         </ul>
-        <form method="GET" action="{% url 'index' %}" class="d-flex" role="search" style="margin-right: 500px; width: 400px;">
-          <input class="form-control me-2" type="search" name="query" placeholder="Site de arat" aria-label="Search">
-          <button class="btn text-white" type="submit">Ara</button>
+        <form method="GET" action="{% url 'index' %}" class="d-flex" role="search"">
+          <div class="search-container">
+            <input class="form-control me-2" type="search" name="query" placeholder="Site de arat" aria-label="Search">
+            <button class="search-button" type="submit">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
         </form>
-        {% if request.user.is_authenticated %}
-       
         
-       
-        <div class="dropdown" style="margin-right: 90px;" >
-         
-          <a class="btn text-white dropdown-toggle" href="#" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              {{ request.user }}
-             
-          </a>
-          <ul class="dropdown-menu btn bg-white">
-              
-              <li><a class="dropdown-item ilk" style="color: rgb(0, 0, 0);" href="{% url 'logoutUser' %}">Çıkış Yap</a></li>
-              <li><a class="dropdown-item ilk" style="color: rgb(0, 0, 0);" href="{% url 'profil' %}">Profil</a></li>
-             
-          
-          </ul>
-      </div>
-     
-     
+
+        
+        {% if request.user.is_authenticated %}
+              <div class="dropdown" style="margin-right: 90px;">
+                  <a class="btn text-white avatar-btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if updated_profile_image %}
+                      <img src="{{ updated_profile_image }}" alt="Profil Resmi">
+                    {% elif request.user.profile_image %}
+                      <img src="{{ request.user.profile_image.url }}" alt="Profil Resmi">
+                    {% else %}
+                      <img src="{% static 'img/default-avatar.jpg' %}" alt="Varsayılan Avatar">
+                    {% endif %}
+                  </a>
+                  <ul class="dropdown-menu btn bg-white">
+                      <li><a class="dropdown-item ilk" style="color: rgb(0, 0, 0);" href="{% url 'profil' %}">Profil</a></li>
+                      <li><a class="dropdown-item ilk" style="color: rgb(0, 0, 0);" href="{% url 'logoutUser' %}">Çıkış Yap</a></li>
+                  </ul>
+              </div>
         {% endif %}
+
         
        
           
